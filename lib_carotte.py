@@ -153,7 +153,7 @@ class Variable(typing.Sequence['Variable']):
         if isinstance(index, int):
             return Select(index, self)
         raise TypeError(f"Invalid getitem, index: {index} is neither a slice or an integer")
-    def __add__(self, rhs: 'Variable') -> 'Variable':
+    def __add__(self, rhs: 'VariableOrDefer') -> 'Variable':
         return Concat(self, rhs)
 
 class Defer:
@@ -176,6 +176,9 @@ class Defer:
     def name(self) -> str:
         '''We want to compute the variable name lazily'''
         return self.get_val().name
+    
+    def __add__(self, rhs: 'VariableOrDefer') -> 'Variable':
+        return Concat(self, rhs)
 
 VariableOrDefer = typing.Union[Variable, Defer]
 
